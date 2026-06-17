@@ -15,6 +15,7 @@ import {
 } from '@nestjs/swagger';
 import { BookingAdminService } from './booking-admin.service';
 import { TopCaregiversResponseDto } from './dtos/top-caregivers-response.dto';
+import { TopCaregiversQueryDto } from './dtos/top-caregivers-query.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -40,50 +41,7 @@ export class BookingAdminController {
       Requires ADMIN role.
     `,
   })
-  @ApiQuery({
-    name: 'page',
-    required: false,
-    type: Number,
-    description: 'Page number for pagination',
-    example: 1,
-  })
-  @ApiQuery({
-    name: 'limit',
-    required: false,
-    type: Number,
-    description: 'Number of items per page',
-    example: 10,
-  })
-  @ApiQuery({
-    name: 'minRating',
-    required: false,
-    type: Number,
-    description: 'Minimum average rating to include (default: 4.0)',
-    example: 4.0,
-  })
-  @ApiQuery({
-    name: 'minReviews',
-    required: false,
-    type: Number,
-    description: 'Minimum number of reviews required (default: 1)',
-    example: 5,
-  })
-  @ApiQuery({
-    name: 'sortBy',
-    required: false,
-    type: String,
-    enum: ['rating', 'reviews', 'bookings'],
-    description: 'Field to sort by (default: rating)',
-    example: 'rating',
-  })
-  @ApiQuery({
-    name: 'order',
-    required: false,
-    type: String,
-    enum: ['ASC', 'DESC'],
-    description: 'Sort order (default: DESC)',
-    example: 'DESC',
-  })
+  // Query parameters validated by DTO
   @ApiResponse({
     status: 200,
     description: 'Top performing caregivers retrieved successfully',
@@ -98,13 +56,17 @@ export class BookingAdminController {
     description: 'Forbidden (Admin role required)',
   })
   async getTopPerformingCaregivers(
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
-    @Query('minRating') minRating: number = 3.0,
-    @Query('minReviews') minReviews: number = 1,
-    @Query('sortBy') sortBy: 'rating' | 'reviews' | 'bookings' = 'rating',
-    @Query('order') order: 'ASC' | 'DESC' = 'DESC',
+    @Query() query: TopCaregiversQueryDto,
   ): Promise<TopCaregiversResponseDto> {
+    const {
+      page = 1,
+      limit = 10,
+      minRating = 4.0,
+      minReviews = 1,
+      sortBy = 'rating',
+      order = 'DESC',
+    } = query;
+
     return this.bookingAdminService.getTopPerformingCaregivers(
       page,
       limit,

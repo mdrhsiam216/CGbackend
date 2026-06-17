@@ -5,7 +5,7 @@ import { Booking } from '../bookings/entities/booking.entity';
 import { Review } from '../review/entities/review.entity';
 import { BookingAdminController } from './booking-admin.controller';
 import { BookingAdminService } from './booking-admin.service';
-import { BookingAdminRepository } from './booking-admin.repository';
+import { BookingAdminRepository } from './repositories/booking-admin.repository';
 import { ReviewRepository } from '../review/repositories/review.repository';
 import { CustomLogger } from '../../shared/services/custom-logger.service';
 import { AuthModule } from '../auth/auth.module';
